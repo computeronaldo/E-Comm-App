@@ -4,7 +4,6 @@ import {
   FaInstagram,
   FaLinkedinIn,
 } from "react-icons/fa";
-import NewsLetterImg from "../../../assets/newsletter-bg.jpeg";
 import "./Newsletter.scss";
 
 const Newsletter = () => {

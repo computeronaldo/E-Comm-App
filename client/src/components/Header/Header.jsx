@@ -12,6 +12,8 @@ import { Context } from "../../utils/context";
 import "./Header.scss";
 
 const Header = () => {
+  const [showCart, setShowCart] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
   const [sticky, setSticky] = useState(false);
 
   const handleScroll = () => {
@@ -28,24 +30,28 @@ const Header = () => {
   }, []);
 
   return (
-    <header className={`main-header ${sticky ? "sticky-header" : ""}`}>
-      <div className="header-content">
-        <ul className="left">
-          <li>Home</li>
-          <li>About</li>
-          <li>Categories</li>
-        </ul>
-        <div className="center">E-Commerce Store</div>
-        <div className="right">
-          <TbSearch />
-          <AiOutlineHeart />
-          <span className="cart-icon">
-            <CgShoppingCart />
-            <span>5</span>
-          </span>
+    <>
+      <header className={`main-header ${sticky ? "sticky-header" : ""}`}>
+        <div className="header-content">
+          <ul className="left">
+            <li>Home</li>
+            <li>About</li>
+            <li>Categories</li>
+          </ul>
+          <div className="center">E-Commerce Store</div>
+          <div className="right">
+            <TbSearch onClick={() => setShowSearchBar(true)} />
+            <AiOutlineHeart />
+            <span className="cart-icon" onClick={() => setShowCart(true)}>
+              <CgShoppingCart />
+              <span>5</span>
+            </span>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      {showCart && <Cart setShowCart={setShowCart} />}
+      {showSearchBar && <Search setShowSearchBar={setShowSearchBar} />}
+    </>
   );
 };
 
