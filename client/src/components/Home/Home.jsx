@@ -9,9 +9,10 @@ import "./Home.scss";
 const Home = () => {
   const { categories, setCategories, products, setProducts } =
     useContext(Context);
+
   useEffect(() => {
     getCategories();
-    getPeoducts();
+    getProducts();
   }, []);
 
   const getCategories = () => {
@@ -20,7 +21,7 @@ const Home = () => {
     });
   };
 
-  const getPeoducts = () => {
+  const getProducts = () => {
     fetchDataFromApi("/api/products?populate=*").then((res) => {
       setProducts(res);
     });
@@ -30,8 +31,8 @@ const Home = () => {
       <Banner />
       <div className="main-content">
         <div className="layout">
-          <Category categories={categories} />
-          <Products products={products} />
+          {categories && <Category categories={categories} />}
+          {products && <Products products={products.data} />}
         </div>
       </div>
     </div>
