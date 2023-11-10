@@ -1,4 +1,6 @@
-import RelativeProducts from "./RelatedProducts/RelatedProducts";
+import { useParams } from "react-router-dom";
+import useFetch from "../../hooks/useFetch";
+import RelatedProducts from "./RelatedProducts/RelatedProducts";
 import {
   FaFacebookF,
   FaTwitter,
@@ -7,21 +9,34 @@ import {
   FaPinterest,
   FaCartPlus,
 } from "react-icons/fa";
-import prod from "../../assets/products/earbuds-prod-1.webp";
 import "./SingleProduct.scss";
 
 const SingleProduct = () => {
+  const { id } = useParams();
+  const { data: productData } = useFetch(
+    `/api/products?populate=*&[filters][id]=${id}`
+  );
+
   return (
     <div className="single-product-main-content">
       <div className="layout">
         <div className="single-product-page">
           <div className="left">
-            <img src={prod} alt="product-img" />
+            <img
+              src={`http://localhost:1337${productData?.data[0]?.attributes?.img?.data[0]?.attributes?.formats?.small?.url}`}
+              alt="product-img"
+            />
           </div>
           <div className="right">
-            <span className="name">Product name</span>
-            <span className="price">Price</span>
-            <span className="description">Product description</span>
+            <span className="name">
+              {productData?.data[0]?.attributes?.title}
+            </span>
+            <span className="price">
+              {productData?.data[0]?.attributes?.price}
+            </span>
+            <span className="description">
+              {productData?.data[0]?.attributes?.desc}
+            </span>
             <div className="cart-buttons">
               <div className="quantity-buttons">
                 <span>-</span>
@@ -37,7 +52,12 @@ const SingleProduct = () => {
             <div className="info-item">
               <span className="text-bold">
                 Category:
-                <span>Headphones</span>
+                <span>
+                  {
+                    productData?.data[0]?.attributes?.categories?.data[0]
+                      ?.attributes?.title
+                  }
+                </span>
               </span>
               <span className="text-bold">
                 Share:
@@ -52,7 +72,14 @@ const SingleProduct = () => {
             </div>
           </div>
         </div>
-        <RelativeProducts />
+        {productData && (
+          <RelatedProducts
+            productId={id}
+            categoryId={
+              productData?.data[0]?.attributes?.categories?.data[0]?.id
+            }
+          />
+        )}
       </div>
     </div>
   );

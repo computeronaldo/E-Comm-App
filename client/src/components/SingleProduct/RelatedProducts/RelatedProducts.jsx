@@ -1,9 +1,24 @@
+import useFetch from "../../../hooks/useFetch";
 import Products from "../../Products/Products";
 
-const RelatedProducts = () => {
+const RelatedProducts = ({ categoryId, productId }) => {
+  const { data } = useFetch(
+    `/api/products?populate=*&[filters][categories][id]=${categoryId}`
+  );
+
+  const relatedProducts = data?.data?.filter(
+    (product) => product.id !== parseInt(productId)
+  );
+
   return (
     <div>
-      <Products relativeProducts={true} innerPage={true} />
+      {relatedProducts && (
+        <Products
+          relative={true}
+          relatedProducts={relatedProducts}
+          innerPage={true}
+        />
+      )}
     </div>
   );
 };
