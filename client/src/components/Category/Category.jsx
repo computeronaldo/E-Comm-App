@@ -8,7 +8,6 @@ const Category = () => {
   const { data: productsData } = useFetch(
     `/api/products?populate=*&[filters][categories][id]=${id}`
   );
-
   const { data: categoryData } = useFetch(`/api/categories/${id}`);
 
   return (
