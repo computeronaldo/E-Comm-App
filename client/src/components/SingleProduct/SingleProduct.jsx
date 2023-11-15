@@ -1,3 +1,5 @@
+import { Context } from "../../utils/context";
+import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import RelatedProducts from "./RelatedProducts/RelatedProducts";
@@ -16,6 +18,36 @@ const SingleProduct = () => {
   const { data: productData } = useFetch(
     `/api/products?populate=*&[filters][id]=${id}`
   );
+
+  const [productAmount, setProductAmount] = useState(0);
+  const { dispatchFn } = useContext(Context);
+
+  const handleAddition = () => {
+    const productId = productData?.data[0]?.id;
+    const productName = productData?.data[0]?.attributes?.title;
+    const productPrice = productData?.data[0]?.attributes?.price;
+    const productQuantity = productAmount;
+    const productImagePath =
+      productData?.data[0]?.attributes?.img?.data[0]?.attributes?.formats?.small
+        ?.url;
+
+    if (productAmount === 0) {
+      return;
+    }
+
+    dispatchFn({
+      type: "ADD_TO_CART",
+      payload: {
+        cartItem: {
+          id: productId,
+          name: productName,
+          price: productPrice,
+          quantity: productQuantity,
+          imgPath: productImagePath,
+        },
+      },
+    });
+  };
 
   return (
     <div className="single-product-main-content">
@@ -39,11 +71,30 @@ const SingleProduct = () => {
             </span>
             <div className="cart-buttons">
               <div className="quantity-buttons">
-                <span>-</span>
-                <span>5</span>
-                <span>+</span>
+                <span
+                  onClick={() =>
+                    setProductAmount((prevAmount) => {
+                      return prevAmount === 0 ? 0 : prevAmount - 1;
+                    })
+                  }
+                >
+                  -
+                </span>
+                <span>{productAmount}</span>
+                <span
+                  onClick={() =>
+                    setProductAmount((prevAmount) => {
+                      return prevAmount === 10 ? 10 : prevAmount + 1;
+                    })
+                  }
+                >
+                  +
+                </span>
               </div>
-              <button className="add-to-cart-button">
+              <button
+                className="add-to-cart-button"
+                onClick={() => handleAddition()}
+              >
                 <FaCartPlus size={20} />
                 ADD TO CART
               </button>
