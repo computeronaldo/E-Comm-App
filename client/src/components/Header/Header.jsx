@@ -12,6 +12,7 @@ import { Context } from "../../utils/context";
 import "./Header.scss";
 
 const Header = () => {
+  const { cartState } = useContext(Context);
   const [showCart, setShowCart] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [sticky, setSticky] = useState(false);
@@ -45,7 +46,7 @@ const Header = () => {
             <AiOutlineHeart />
             <span className="cart-icon" onClick={() => setShowCart(true)}>
               <CgShoppingCart />
-              <span>5</span>
+              <span>{cartState.totalQuantity}</span>
             </span>
           </div>
         </div>
