@@ -1,5 +1,5 @@
 import { Context } from "../../utils/context";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import RelatedProducts from "./RelatedProducts/RelatedProducts";
@@ -14,12 +14,17 @@ import {
 import "./SingleProduct.scss";
 
 const SingleProduct = () => {
+  const [productAmount, setProductAmount] = useState(1);
+
   const { id } = useParams();
   const { data: productData } = useFetch(
     `/api/products?populate=*&[filters][id]=${id}`
   );
 
-  const [productAmount, setProductAmount] = useState(0);
+  useEffect(() => {
+    setProductAmount(1);
+  }, [id]);
+
   const { dispatchFn } = useContext(Context);
 
   const handleAddition = () => {
