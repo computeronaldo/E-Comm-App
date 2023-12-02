@@ -3,11 +3,33 @@ import { Context } from "../../utils/context";
 import { MdClose } from "react-icons/md";
 import { BsCartX } from "react-icons/bs";
 import CartItem from "../Cart/CartItem/CartItem";
+import { makePaymentRequest } from "../../utils/api";
 
 import "./Cart.scss";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Cart = ({ setShowCart }) => {
   const { cartState } = useContext(Context);
+
+  const stripePromise = loadStripe(
+    process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
+  );
+
+  const handlePayment = async () => {
+    try {
+      const stripe = await stripePromise;
+      const res = await makePaymentRequest.post("/api/orders", {
+        products: cartState.cart,
+      });
+
+      await stripe.redirectToCheckout({
+        sessionId: res.data.stripeSession.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="cart-panel">
       <div className="opac-layer"></div>
@@ -36,7 +58,9 @@ const Cart = ({ setShowCart }) => {
               <span className="text total">&#8377;{cartState.subTotal}</span>
             </div>
             <div className="button">
-              <button className="checkout-cta">Checkout</button>
+              <button className="checkout-cta" onClick={handlePayment}>
+                Checkout
+              </button>
             </div>
           </div>
         </>
